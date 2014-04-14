@@ -1,0 +1,7 @@
+name = Custom Example
+description = Just a simple example module
+version = 0.1
+core = 7.x
+package = Alpha Custom Modules
+
+scripts[] = custom_example.js
