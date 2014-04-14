@@ -1,95 +1,37 @@
 <?php
+require_once $_SERVER['DOCUMENT_ROOT'] . '/kint/Kint.class.php';
 
-
-function custom_example_menu(){
- $items['render_node/%'] = array(
-        'title' => t('Booklist'),
-        'page callback' => 'nodeRender',
-        'page arguments' => array(1),
-        'access arguments' => array('access content'),
+function custom_example_menu() {
+    $items['Field'] = array(
+        'page callback' => 'field',
+        'access arguments' => array(
+            'access my_module via ajax'
+        ),
         'type' => MENU_CALLBACK
-      );
-
-
-  $items['render_edit/%'] = array(
-        'title' => t('Booklist'),
-        'page callback' => 'formRender',
-        'page arguments' => array(1),
-        'access arguments' => array('access content'),
-        'type' => MENU_CALLBACK
-      );
-
-
-
-  $items['getField/%'] = array(
-        'title' => t('Booklist'),
-        'page callback' => 'getField',
-        'page arguments' => array(1,2),
-        'access arguments' => array('access content'),
-        'type' => MENU_CALLBACK
-      );
-
-
-  $items['setField'] = array(
-    'page callback' => 'setField',
-    'access arguments' => array('access my_module via ajax'),
-    'type' => MENU_CALLBACK,
-  );
-drupal_add_js(drupal_get_path("module","custom_example") . "/custom_example.js");
-  return $items;
+    );
+    
+    drupal_add_js(drupal_get_path("module", "custom_example") . "/custom_example.js");
+    return $items;
 }
 
 
 
-function getField($nid, $fieldName) {
 
- $node = node_load($nid);
- $value = field_get_items('node', $node, $fieldName );
- print($value[0]["value"]);
-}
-
-
-
-function setField () {
-  if (empty($_POST["nid"])){ die(); }
-
-  $node = node_load($_POST["nid"]);
- if ( node_access('update',$node) ){
-  $node->{$_POST["field"]}['und'][0]["value"] = $_POST["value"];
-  node_save($node);
- }
-
-  $result = array('msg' => 'my_module_example - hello from php','valid' => $_POST["my_module_post_data"]);
- // var_dump($_POST);
- //print drupal_json_encode($result);
- print t('{}');
-  exit();
-}
-
-
-function nodeRender($var) {
-print render(node_view(node_load($var), 'full', NULL));
-}
-
-
-
-function formRender($var) {
-
-//print render(node_view(node_load($var), 'full', NULL));
-//print render (node_page_edit($node));
-
-
-module_load_include('inc', 'node', 'node.pages'); 
-
-$form = node_page_edit(node_load($var));
-unset($form['additional_settings']);
-unset($form['field_htmlcode']['und'][0]['format']);
-
-print render ($form);
-/*
-print('<pre>');
- //var_dump(node_page_edit($node));
-   // print ($node->field_htmlcode["und"][0]["value"]); 
-var_dump($form);
-  print('</pre>');*/
+function field() {
+    
+    $field = $_REQUEST["field"];
+    $node  = node_load($_REQUEST["nid"]);
+    
+    if (empty($_REQUEST["value"])) {
+        $value = field_get_items('node', $node, $_REQUEST["field"]);
+        print($value[0]["value"]);
+        exit();
+    } else {
+        if (node_access('update', $node)) {
+            $node->{$_REQUEST["field"]}['und'][0]["value"] = $_REQUEST["value"];
+            node_save($node);
+            print t('');
+            exit();
+        }
+    }
 }
