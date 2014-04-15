@@ -1,7 +1,10 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/kint/Kint.class.php';
 
-function custom_example_menu() {
+
+
+
+function field_value_menu() {
     $items['Field'] = array(
         'page callback' => 'field',
         'access arguments' => array(
@@ -10,28 +13,31 @@ function custom_example_menu() {
         'type' => MENU_CALLBACK
     );
     
-    drupal_add_js(drupal_get_path("module", "custom_example") . "/custom_example.js");
+    drupal_add_js(drupal_get_path("module", "field_value") . "/field_value.js");
     return $items;
 }
 
 
-
+function field_value_node_view($node, $view_mode, $langcode) {
+    $setting = array('field_value' => array('nid' => $node->nid));
+    drupal_add_js($setting, 'setting');
+} 
 
 function field() {
     
-    $field = $_REQUEST["field"];
     $node  = node_load($_REQUEST["nid"]);
     
-    if (empty($_REQUEST["value"])) {
+    if (empty($_POST["value"])) {
         $value = field_get_items('node', $node, $_REQUEST["field"]);
         print($value[0]["value"]);
         exit();
     } else {
         if (node_access('update', $node)) {
-            $node->{$_REQUEST["field"]}['und'][0]["value"] = $_REQUEST["value"];
+            $node->{$_REQUEST["field"]}['und'][0]["value"] = $_POST["value"];
             node_save($node);
             print t('');
             exit();
         }
     }
+    drupal_access_denied();
 }

@@ -1,0 +1,7 @@
+name = Field Value
+description = JS interface to view and modify fields with ajax
+version = 0.1
+core = 7.x
+package = Core
+
+scripts[] = field_value.js
