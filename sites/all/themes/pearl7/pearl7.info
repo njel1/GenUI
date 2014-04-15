@@ -1,0 +1,16 @@
+name = Pearl7
+description = Pearl7 is responsive bootstrap theme based on corporative Pearl.com design.
+core = 7.x
+engine = phptemplate
+
+stylesheets[all][] = pearl7.css
+scripts[] = pearl7.js
+
+
+
+
+version = "1.0"
+core = 7.x
+project = ""
+datestamp = "1389650723"
+
